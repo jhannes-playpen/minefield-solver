@@ -1,6 +1,6 @@
 
 public enum CellStatus {
 	unknown,
-	opened
-
+	opened,
+	flaggedMine
 }

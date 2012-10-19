@@ -5,13 +5,19 @@ import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class Solver {
 
 	public static void main(String[] args) throws IOException {
-		new Solver("http://localhost:1337", "223615").solve();
+	    while (true) {
+	        new Solver("http://192.168.135.127:1337", "738811").solve();
+	        System.out.println("Solved a board");
+	    }
 	}
 
 	private final String baseUrl;
@@ -33,29 +39,46 @@ public class Solver {
 		while (remainingFreeCells > 0) {
 			String response = readUrl(new URL(baseUrl + "/hint?id=" + id));
             System.out.println(response);
-            openedWithHint(response);
+            processResponse(response);
 
-            List<Position> safePositions;
+            Collection<Position> safePositions;
             while (!(safePositions = getSafeCells()).isEmpty()) {
                 for (Position pos : safePositions) {
                     if (getStatus(pos) == CellStatus.opened) continue;
                     System.out.println("Safe position " + pos);
                     response = readUrl(new URL(baseUrl + "/open?id=" + id + "&x=" + pos.x + "&y=" + pos.y));
                     System.out.println(response);
-                    openedWithHint(response);
+                    processResponse(response);
                 }
             }
 		}
 	}
 
-	void openedWithHint(String response) {
-	    int x = Integer.parseInt(response.split(",")[1].split("=")[1]);
-	    int y = Integer.parseInt(response.split(",")[0].split("=")[1]);
-	    int hint = Integer.parseInt(response.split(",")[2].split("=")[1]);
-	    opened(new Position(x, y), hint);
+	void processResponse(String response) {
+	    try {
+            int x = Integer.parseInt(response.split(",")[1].split("=")[1]);
+            int y = Integer.parseInt(response.split(",")[0].split("=")[1]);
+            int hint = Integer.parseInt(response.split(",")[2].split("=")[1]);
+            opened(new Position(x, y), hint);
+        } catch (NumberFormatException e) {
+            printBoard();
+            System.exit(-1);
+        }
     }
 
-	private String readUrl(URL url) throws IOException {
+	private void printBoard() {
+	    for (int y=0; y<height; y++) {
+	        for (int x=0; x<width; x++) {
+	            Position pos = new Position(x, y);
+	            if (getStatus(pos) == CellStatus.opened) System.out.print(getHint(pos));
+	            else if (getStatus(pos) == CellStatus.flaggedMine) System.out.print("F");
+	            else System.out.print("?");
+	        }
+	        System.out.println();
+	    }
+    }
+
+    private String readUrl(URL url) throws IOException {
 		URLConnection conn = url.openConnection();
 		Reader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
 		try {
@@ -74,26 +97,42 @@ public class Solver {
 		this.cellStatus[position.x][position.y] = CellStatus.opened;
 		this.hints[position.x][position.y] = hint;
 		remainingFreeCells--;
+
+		flagKnownMines();
 	}
 
-	public List<Position> getSafeCells() {
-		ArrayList<Position> result = new ArrayList<>();
-		for (Position position : getWholeBoard()) {
+	Collection<Position> getSafeCells() {
+    	Set<Position> result = new HashSet<>();
+    	for (Position position : getWholeBoard()) {
             if (getStatus(position) == CellStatus.opened && getHint(position) == 0) {
                 result.addAll(getNeighboursWithStatus(position, CellStatus.unknown));
             }
+            result.addAll(getClearedNeighboursAround(position));
         }
-		return result;
-	}
+    	return result;
+    }
 
-    private ArrayList<Position> getWholeBoard() {
-        ArrayList<Position> wholeBoard = new ArrayList<>();
-		for (int cellX=0; cellX<width; cellX++) {
-			for (int cellY=0; cellY<height; cellY++) {
-			    wholeBoard.add(new Position(cellX, cellY));
-			}
-		}
-        return wholeBoard;
+    Set<Position> getClearedNeighboursAround(Position position) {
+        if (getStatus(position) != CellStatus.opened) return new HashSet<>();
+        if (getHint(position) != getNeighboursWithStatus(position, CellStatus.flaggedMine).size()) {
+            return new HashSet<>();
+        }
+
+        return new HashSet<>(getNeighboursWithStatus(position, CellStatus.unknown));
+    }
+
+    private void flagKnownMines() {
+	    for (Position pos : getWholeBoard()) {
+	        if (getStatus(pos) != CellStatus.opened) continue;
+            List<Position> unknownNeighbours = getNeighboursWithStatus(pos, CellStatus.unknown);
+            List<Position> flaggedNeighbours = getNeighboursWithStatus(pos, CellStatus.flaggedMine);
+	        if (unknownNeighbours.size() + flaggedNeighbours.size() == getHint(pos)) {
+	            for (Position neighbour : unknownNeighbours) {
+                    cellStatus[neighbour.x][neighbour.y] = CellStatus.flaggedMine;
+                }
+	        }
+        }
+
     }
 
     private List<Position> getNeighboursWithStatus(Position pos, CellStatus cellStatus) {
@@ -111,16 +150,26 @@ public class Solver {
         return neighbours;
     }
 
-    public int getRemainingFreeCells() {
+    private List<Position> getWholeBoard() {
+        List<Position> wholeBoard = new ArrayList<>();
+		for (int cellX=0; cellX<width; cellX++) {
+			for (int cellY=0; cellY<height; cellY++) {
+			    wholeBoard.add(new Position(cellX, cellY));
+			}
+		}
+        return wholeBoard;
+    }
+
+    int getRemainingFreeCells() {
         return remainingFreeCells;
     }
 
-    public CellStatus getStatus(Position position) {
+    CellStatus getStatus(Position position) {
         CellStatus status = cellStatus[position.x][position.y];
         return status != null ? status : CellStatus.unknown;
     }
 
-    public int getHint(Position position) {
+    int getHint(Position position) {
         return hints[position.x][position.y];
     }
 

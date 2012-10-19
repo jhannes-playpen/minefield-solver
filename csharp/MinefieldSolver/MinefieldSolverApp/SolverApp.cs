@@ -11,7 +11,7 @@ namespace MinefieldSolverApp
 
         public static void Main(string[] args)
         {
-            new MinefieldSolver.Solver("http://localhost:1337", "523111").Solve();
+            new MinefieldSolver.Solver("http://192.168.135.127:1337", "738811").Solve();
         }
     }
 }
