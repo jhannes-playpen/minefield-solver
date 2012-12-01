@@ -1,11 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinefieldSolverTests", "MinefieldSolverTests\MinefieldSolverTests.csproj", "{72A98210-4FF2-4A29-BC06-21AC87C34880}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinefieldSolver", "MinefieldSolver\MinefieldSolver.csproj", "{98D2B0E4-7665-4D65-AA66-F0228BAE703E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinefieldSolverApp", "MinefieldSolverApp\MinefieldSolverApp.csproj", "{ABB1B6F0-0BB6-4B2E-8A3D-4ECF2E7177AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,18 +9,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{72A98210-4FF2-4A29-BC06-21AC87C34880}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{72A98210-4FF2-4A29-BC06-21AC87C34880}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{72A98210-4FF2-4A29-BC06-21AC87C34880}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72A98210-4FF2-4A29-BC06-21AC87C34880}.Release|Any CPU.Build.0 = Release|Any CPU
 		{98D2B0E4-7665-4D65-AA66-F0228BAE703E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98D2B0E4-7665-4D65-AA66-F0228BAE703E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98D2B0E4-7665-4D65-AA66-F0228BAE703E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98D2B0E4-7665-4D65-AA66-F0228BAE703E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABB1B6F0-0BB6-4B2E-8A3D-4ECF2E7177AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABB1B6F0-0BB6-4B2E-8A3D-4ECF2E7177AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABB1B6F0-0BB6-4B2E-8A3D-4ECF2E7177AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABB1B6F0-0BB6-4B2E-8A3D-4ECF2E7177AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
