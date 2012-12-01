@@ -8,23 +8,23 @@ import java.net.URLConnection;
 
 public class Solver {
 
-	private String baseUrl;
-	private String id;
+	private final String baseUrl;
+	private final String id;
 	private final int height = 16;
 	private final int width = 30;
 	private final int mines = 99;
-	private int remainingMines;
+	private int remainingCells;
 
 	public Solver(String baseUrl, String id) {
 		this.baseUrl = baseUrl;
 		this.id = id;
-		this.remainingMines = height*width - mines;
+		this.remainingCells = height*width - mines;
 	}
 
 	private void solve() throws IOException {
-		while (remainingMines > 0) {
+		while (remainingCells > 0) {
 			System.out.println(readUrl(new URL(baseUrl + "/hint?id=" + id)));
-			remainingMines--;
+			remainingCells--;
 		}
 	}
 
@@ -47,9 +47,9 @@ public class Solver {
 		}
 	}
 
-	
+
 	public static void main(String[] args) throws IOException {
-		new Solver("http://localhost:1337", "182911").solve();
+		new Solver("http://localhost:1337", "456111").solve();
 	}
 
 
